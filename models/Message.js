@@ -1,39 +1,65 @@
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-    content: {
-        type: String,
+    conversationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Conversation',
         required: true,
     },
     senderId: {
         type: String,
         required: true,
     },
-    recipientId: {
+    encryptedContent: {
         type: String,
         required: true,
     },
-    timestamp: {
+    encryptionKey: {
+        type: String,
+        required: true,
+    },
+    iv: {
+        type: String,
+        required: true,
+    },
+    messageType: {
+        type: String,
+        enum: ['text', 'image', 'audio', 'file'],
+        default: 'text',
+    },
+    aiAnalysis: {
+        sentiment: {
+            type: String,
+            enum: ['positive', 'neutral', 'negative'],
+            default: null,
+        },
+        isSpam: {
+            type: Boolean,
+            default: false,
+        },
+        flagged: {
+            type: Boolean,
+            default: false,
+        },
+        moderationScore: {
+            type: Number,
+            min: 0,
+            max: 1,
+        },
+    },
+    reactions: [{
+        userId: String,
+        emoji: String,
+    }],
+    createdAt: {
         type: Date,
         default: Date.now,
     },
-    sentiment: {
-        type: Number,
-        required: false,
+    updatedAt: {
+        type: Date,
+        default: Date.now,
     },
-    isSpam: {
-        type: Boolean,
-        default: false,
-    },
-    moderationScore: {
-        type: Number,
-        required: false,
-    },
-    aiAnalysis: {
-        type: Object,
-        required: false,
-    }
-}, { timestamps: true });
+});
 
 const Message = mongoose.model('Message', messageSchema);
 
