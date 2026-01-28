@@ -1,39 +1,22 @@
 const mongoose = require('mongoose');
 
-// Define the encrypted message schema
-const MessageSchema = new mongoose.Schema({
-    content: {
-        type: String,
-        required: true,
-        trim: true
+const messageSchema = new mongoose.Schema({
+    conversationId: { type: String, required: true },
+    senderId: { type: String, required: true },
+    encryptedContent: { type: String, required: true },
+    encryptionKey: { type: String, required: true },
+    iv: { type: String, required: true },
+    messageType: { type: String, required: true },
+    aiAnalysis: {
+        sentiment: { type: String, required: true },
+        isSpam: { type: Boolean, required: true },
+        flagged: { type: Boolean, required: true },
+        moderationScore: { type: Number, required: true },
     },
-    senderId: {
-        type: String,
-        required: true,
-    },
-    recipientId: {
-        type: String,
-        required: true,
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now,
-    },
-    // AI Analysis Fields
-    sentiment: {
-        type: Number,
-        default: 0,
-        // Define range -1 (negative) to 1 (positive)
-    },
-    isSpam: {
-        type: Boolean,
-        default: false,
-    },
-    moderationScore: {
-        type: Number,
-        default: 0,
-    },
+    reactions: [{ type: String }],
+    timestamps: { createdAt: { type: Date, default: Date.now }, updatedAt: { type: Date, default: Date.now } }
 });
 
-// Export the model
-module.exports = mongoose.model('Message', MessageSchema);
+const Message = mongoose.model('Message', messageSchema);
+
+module.exports = Message;
